@@ -108,6 +108,7 @@ sql: DatabaseConnection = None
 def create_arguments():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-n', '--times-to-run', type=int)
     parser.add_argument('n_warehouses', type=int)
     parser.add_argument('db_connect_str', nargs='+', type=str)
 
@@ -344,24 +345,21 @@ def stock_level(w_id, d_id):
 
 if __name__ == '__main__':
     args = create_arguments()
+    times_to_run = args.times_to_run
     n_warehouses = args.n_warehouses
     sql = DatabaseConnection(' '.join(args.db_connect_str), 'workload/')
 
     HOME_W_ID = urand(1, n_warehouses)
     HOME_D_ID = urand(1, DIST_PER_WARE)
 
-    print(f'+ starting TPC-C benchmark (home warehouse: {HOME_W_ID}, district: {HOME_D_ID})')
+    print(f'+ starting TPC-C benchmark (runs: {times_to_run}, warehouses: {n_warehouses}, home warehouse: {HOME_W_ID}, district: {HOME_D_ID})')
     tic = time.time()
-    print('- new-order')
-    new_order(HOME_W_ID)
-    print('- payment')
-    payment(HOME_W_ID)
-    print('- order-status')
-    order_status(HOME_W_ID)
-    print('- delivery')
-    delivery(HOME_W_ID)
-    print('- stock-level')
-    stock_level(HOME_W_ID, HOME_D_ID)
+    for _ in range(times_to_run):
+        new_order(HOME_W_ID)
+        payment(HOME_W_ID)
+        order_status(HOME_W_ID)
+        delivery(HOME_W_ID)
+        stock_level(HOME_W_ID, HOME_D_ID)
     toc = time.time()
     print(f'+ complete in {round(toc - tic, 4)}s')
 

@@ -22,6 +22,9 @@ pip install -r requirements.txt
 
 There are two positional arguments. The first is the number of warehouses to create, which is the unit of scale that TPC-C uses. The second is the Postgres connection string to connect to the database.
 
+> ![WARNING]
+> The primary keys are _not_ created by default (as I am using this utility to evaluate an index recommendation algorithm). If this is not desired behaviour, uncomment the primary keys from [`table_def.sql`](./table_def.sql) before creating the tables.
+
 ```bash
 # create the tables and load 1 warehouse
 python load.py -c 1 dbname=tpccdb
@@ -32,15 +35,15 @@ python load.py 10 dbname=tpccdb
 
 ## Running the benchmark
 
-[`run.py`](./run.py) creates the queries and runs the benchmark. Like the data loader, it has two positional arguments. The first is the number of warehouses present in the database (which must be equal to or less than the number actually loaded). The second is the database connection string.
+[`run.py`](./run.py) creates the queries and runs the benchmark. Like the data loader, it has two positional arguments. The first is the number of warehouses present in the database (which must be equal to or less than the number actually loaded). The second is the database connection string. Finally, there is one optional argument, `-n` or `--times-to-run`, to run each transaction several times.
 
 The benchmark will write the queries it is executing to the `workload/` folder. They are grouped by the transaction as well as the query template they are executed from.
 
 ```bash
-# run the benchmark on a 1 warehouse database
-python run.py 1 dbname=tpccdb
+# run the benchmark 100 times on a 1 warehouse database
+python run.py -n 100 1 dbname=tpccdb
 
-# run the benchmark on a 10 warehouse database
+# run the benchmark once on a 10 warehouse database
 python run.py 10 dbname=tpccdb
 ```
 
