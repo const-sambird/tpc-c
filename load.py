@@ -195,8 +195,8 @@ def orders(d_id, w_id):
 def create_tables():
     print('+ creating tables')
     conn.execute(open('table_def.sql', 'r').read())
-    print('+ creating foreign keys')
-    conn.execute(open('fk_def.sql', 'r').read())
+    #print('+ creating foreign keys')
+    #conn.execute(open('fk_def.sql', 'r').read())
 
 if __name__ == '__main__':
     args = create_arguments()
