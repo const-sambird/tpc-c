@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 There are two positional arguments. The first is the number of warehouses to create, which is the unit of scale that TPC-C uses. The second is the Postgres connection string to connect to the database.
 
-> ![WARNING]
+> [!WARNING]
 > The primary keys are _not_ created by default (as I am using this utility to evaluate an index recommendation algorithm). If this is not desired behaviour, uncomment the primary keys from [`table_def.sql`](./table_def.sql) before creating the tables.
 
 ```bash
