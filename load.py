@@ -2,6 +2,8 @@ import argparse
 import datetime
 import psycopg
 
+import numpy
+import random
 from numpy.random import permutation
 from rand import NURand_CLAST, urand, alphastr, numstr, lastname
 
@@ -16,6 +18,7 @@ conn: psycopg.Connection = None
 def create_arguments():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-s', '--seed', type=int, default=0)
     parser.add_argument('-c', '--create-tables', action='store_true')
     parser.add_argument('warehouses', type=int)
     parser.add_argument('db_connect_str', nargs='+', type=str)
@@ -201,6 +204,9 @@ def create_tables():
 if __name__ == '__main__':
     args = create_arguments()
     n_warehouses = args.warehouses
+
+    numpy.random.seed(args.seed)
+    random.seed(args.seed)
 
     conn = psycopg.connect(' '.join(args.db_connect_str))
 

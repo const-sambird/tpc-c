@@ -3,6 +3,8 @@ import psycopg
 import datetime
 import decimal
 import time
+import numpy
+import random
 from os import path
 from rand import NURand_CID, NURand_OLIID, NURand_CLAST, urand, lastname
 
@@ -108,6 +110,7 @@ sql: DatabaseConnection = None
 def create_arguments():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-s', '--seed', type=int, default=0)
     parser.add_argument('-n', '--times-to-run', type=int)
     parser.add_argument('n_warehouses', type=int)
     parser.add_argument('db_connect_str', nargs='+', type=str)
@@ -347,6 +350,8 @@ if __name__ == '__main__':
     args = create_arguments()
     times_to_run = args.times_to_run
     n_warehouses = args.n_warehouses
+    numpy.random.seed(args.seed)
+    random.seed(args.seed)
     sql = DatabaseConnection(' '.join(args.db_connect_str), 'workload/')
 
     HOME_W_ID = urand(1, n_warehouses)
