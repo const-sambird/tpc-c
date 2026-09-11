@@ -59,6 +59,7 @@ def load_items():
 
 def load_warehouse():
     for w_id in range(1, n_warehouses + 1):
+        print('warehouse:', w_id, '/', n_warehouses)
         w_name = alphastr(6, 10)
         w_street_1 = alphastr(10, 20)
         w_street_2 = alphastr(10, 20)
@@ -75,11 +76,13 @@ def load_warehouse():
 
 def load_cust():
     for w_id in range(1, n_warehouses + 1):
+        print('customer:', w_id, '/', n_warehouses)
         for d_id in range(1, DIST_PER_WARE + 1):
             customer(d_id, w_id)
 
 def load_orders():
     for w_id in range(1, n_warehouses + 1):
+        print('orders:', w_id, '/', n_warehouses)
         for d_id in range(1, DIST_PER_WARE + 1):
             orders(d_id, w_id)
 

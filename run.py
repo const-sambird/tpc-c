@@ -21,6 +21,8 @@ class DatabaseConnection:
         self.closed = False
         self._trans = None
         self._log_is_disabled = False
+        self._statement_ids = {}
+        self._max_statement_id = 0
         self._statements = {}
     
     def close(self):
@@ -30,6 +32,7 @@ class DatabaseConnection:
             self._conn.rollback()
         self._cur.close()
         self._conn.close()
+        self._write()
         self.closed = True
     
     def _ensure_open(self):
@@ -57,6 +60,8 @@ class DatabaseConnection:
                 text.append(';')
             text = ''.join(text)
             if statement not in self._statements:
+                self._statement_ids[statement] = self._max_statement_id + 1
+                self._max_statement_id += 1
                 self._statements[statement] = []
             self._statements[statement].append(text)
     
@@ -66,7 +71,7 @@ class DatabaseConnection:
             statement = entry[0]
             queries = entry[1]
             for i_q, query in enumerate(queries):
-                with open(path.join(self._outpath, f'{self._trans}_{i_s}_{i_q}.sql'), 'w') as outfile:
+                with open(path.join(self._outpath, f'{self._statement_ids[statement]}_{i_q}.sql'), 'w') as outfile:
                     outfile.write(query)
         
         self._statements = {}
@@ -81,15 +86,11 @@ class DatabaseConnection:
         self._ensure_open()
         self._conn.commit()
 
-        self._write()
-
         self._trans = None
     
     def rollback(self):
         self._ensure_open()
         self._conn.rollback()
-        
-        self._write()
 
         self._trans = None
     
